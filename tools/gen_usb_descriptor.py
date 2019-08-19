@@ -9,6 +9,8 @@ from adafruit_usb_descriptor import audio, audio10, cdc, hid, midi, msc, standar
 import hid_report_descriptors
 
 parser = argparse.ArgumentParser(description='Generate USB descriptors.')
+parser.add_argument('--hid_config', type=str,
+                    help='standard HID or XAC')
 parser.add_argument('--manufacturer', type=str,
                     help='manufacturer of the device')
 parser.add_argument('--product', type=str,
@@ -140,7 +142,10 @@ msc_interfaces = [
 
 # Include only these HID devices.
 # DIGITIZER works on Linux but conflicts with MOUSE, so leave it out for now.
-hid_devices = ("KEYBOARD", "MOUSE", "CONSUMER", "GAMEPAD")
+if (args.hid_config == "XAC"):
+    hid_devices = ("XAC",)
+else:
+    hid_devices = ("KEYBOARD", "MOUSE", "CONSUMER", "GAMEPAD")
 
 combined_hid_report_descriptor = hid.ReportDescriptor(
     description="MULTIDEVICE",

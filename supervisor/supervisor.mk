@@ -28,6 +28,11 @@ ifneq ($(SPI_FLASH_FILESYSTEM),)
 	CFLAGS += -DSPI_FLASH_FILESYSTEM=$(SPI_FLASH_FILESYSTEM) -DEXPRESS_BOARD
 endif
 
+# If HID_CONFIG is not set, set it to standard.  This is stop-gap to support the XAC
+ifeq ($(HID_CONFIG),)
+HID_CONFIG = standard
+endif
+
 # Choose which flash filesystem impl to use.
 # (Right now INTERNAL_FLASH_FILESYSTEM and SPI_FLASH_FILESYSTEM are mutually exclusive.
 # But that might not be true in the future.)
@@ -93,6 +98,7 @@ autogen_usb_descriptor.intermediate: ../../tools/gen_usb_descriptor.py Makefile 
 	$(STEPECHO) "GEN $@"
 	$(Q)install -d $(BUILD)/genhdr
 	$(Q)$(PYTHON3) ../../tools/gen_usb_descriptor.py \
+                --hid_config $(HID_CONFIG) \
 		--manufacturer $(USB_MANUFACTURER)\
 		--product $(USB_PRODUCT)\
 		--vid $(USB_VID)\
